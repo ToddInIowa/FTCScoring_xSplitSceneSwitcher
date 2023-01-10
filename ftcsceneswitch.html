@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/output.css" rel="stylesheet">
+
+  </head>
+  <body class="bg-gray">
+    <main>
+      <div class="overflow-hidden rounded-lg bg-gray-300 shadow">
+        <div class="px-4 py-5 sm:p-6">
+          <H1 class="text-lg font-bold leading-6">FTC Live Scoring Scene Switcher</H1>
+        </div>
+
+        
+        <div class="bg-white px-4 py-5 shadow sm:rounded-lg sm:p-6">
+          <div class="md:grid md:grid-cols-3 md:gap-6">
+            <div class="md:col-span-1">
+                <h3 class="text-lg font-medium leading-6 text-gray-900">Connections</h3>
+                <p class="mt-1 text-sm text-gray-500">This is used to connect to the FTC Scoring System. Do not close this window or the connection will be lost.</p>
+                <div class="flex justify-center">
+                  <div class="flex flex-row space-x-4 font-mono text-white text-sm font-bold leading-6">
+                    <div class="mt-1 flex rounded-md shadow-sm">
+                      <span class="inline-flex whitespace-nowrap items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500">Scoring System</span>
+                      <div id="SSConnectedStatus" class="h-10 flex rounded-r-md border border-l-0 items-center justify-center px-3 text-sm bg-red-600 shadow-lg">Huh?</div>
+                    </div>
+                    
+                  </div>
+                </div>
+                <div class="flex justify-center">
+                  <div class="flex flex-row space-x-4 font-mono text-white text-sm font-bold leading-6">
+                    <div class="mt-1 flex rounded-md shadow-sm">
+                      <span class="inline-flex whitespace-nowrap items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500">XSplit</span>
+                      <div id="XSplitStatus" class="h-10 flex rounded-r-md border border-l-0 items-center justify-center px-3 text-sm bg-red-600 shadow-lg">Huh?</div>
+                    </div>
+                    
+                  </div>
+                </div>
+            </div>
+            <div class="mt-5 space-y-6 md:col-span-2 md:mt-0">
+              <div class="grid grid-cols-3 gap-6">
+                <div class="col-span-3 sm:col-span-2">
+                  <label for="scoring-system" class="block text-sm font-medium text-gray-700">Scoring System URL</label>
+                  <div class="mt-1 flex rounded-md shadow-sm">
+                    <span class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500">http://</span>
+                    <input type="text" name="scoring-system" id="scoring-system" class="block w-full flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="ftcscoring.local">
+                    <button type="button" name="ss-pull-events" id="ss-pull-events" class="rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Pull Events</button>
+                  </div>
+                </div>
+              </div>
+
+              <fieldset>
+                <legend class="contents text-base font-medium text-gray-900">Scoring System Events</legend>
+                <p class="text-sm text-gray-500">These are the events active on the Scoring System.</p>
+                <div id="ss-events" class="mt-4 space-y-4">
+                    <!-- Gets filled Dynamically-->
+                    
+
+                </div>
+              </fieldset>
+              <button id="ConnectSS" type="button" class="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Connect</button>
+            </div>
+          </div>
+        </div>
+          
+          
+        <div class="hidden sm:block" aria-hidden="true">
+          <div class="py-5">
+            <div class="border-t border-gray-200"></div>
+          </div>
+        </div>
+
+  <!-- Field and Scene -->
+        <div class="bg-white px-4 py-5 shadow sm:rounded-lg sm:p-6">
+          <div class="mt-10 sm:mt-0">
+            <div class="md:grid md:grid-cols-3 md:gap-6">
+              <div class="md:col-span-1">
+                <div class="px-4 sm:px-0">
+                  <h3 class="text-lg font-medium leading-6 text-gray-900">Field and Scene Information</h3>
+                  <label for="NumFields" class="block text-sm font-medium text-gray-700">How many fields are you running?</label>
+                  <div class="mt-1 flex rounded-md shadow-sm">
+                    
+                    <input type="text" name="NumFields" id="NumFields" value="1" class="block w-full flex-1 rounded-l-md rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                    <button id="UpdateNumFields" type="button" class="rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Update</button>
+                    
+                  </div>
+                </div>
+              </div>
+              <div class="mt-5 md:col-span-2 md:mt-0">
+
+                <div class="grid grid-cols-6 gap-6">
+                  <div class="col-span-3 ">
+                    <legend class="contents text-base font-medium text-gray-900">Field to Scene Mapping</legend>
+                    <div id="FieldMapping" class="mt-4 space-y-4 hidden">
+                      <span class="inline-flex items-center rounded-l-md border whitespace-nowrap border-gray-300 bg-gray-50 py-2 px-3 text-sm text-gray-500">Field 1</span>
+                      <select id="field1-scene" class="h-10 mt-1 block w-full rounded-none rounded-r-md border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+                      
+                      <!-- SceneCount:4-->
+                      <!-- SceneNumber:0-->
+                      <option value="0">Scene 1-</option>
+                      <!-- SceneNumber:1-->
+                      <option value="1">Scene 2-</option>
+                      <!-- SceneNumber:2-->
+                      <option value="2">Scene 3-</option>
+                      <!-- SceneNumber:3-->
+                      <option value="3">Scene 4-</option>
+                      </select></div>
+                    </div>
+                  </div>
+                </div>
+
+              
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+      
+      
+          
+      
+      
+      
+    <div id="scene-id"></div>
+
+
+      <!-- Global notification live region, render this permanently at the end of the document -->
+<!-- <div aria-live="assertive" class="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6">
+  <div class="flex w-full flex-col items-center space-y-4 sm:items-end">
+  -->
+    <!--
+      Notification panel, dynamically insert this into the live region when it needs to be displayed
+
+      Entering: "transform ease-out duration-300 transition"
+        From: "translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+        To: "translate-y-0 opacity-100 sm:translate-x-0"
+      Leaving: "transition ease-in duration-100"
+        From: "opacity-100"
+        To: "opacity-0"
+    -->
+    <!--
+    <div class="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+      <div class="p-4">
+        <div class="flex items-start">
+         <div class="flex-shrink-0">
+              -->
+            <!-- Heroicon name: outline/check-circle -->
+            <!--
+            <svg class="h-6 w-6 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div class="ml-3 w-0 flex-1 pt-0.5">
+            <p id="popup" class="text-sm font-medium text-gray-900">Successfully saved!</p>
+          </div>
+          <div class="ml-4 flex flex-shrink-0">
+            <button type="button" class="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+              <span class="sr-only">Close</span>
+              -->
+              <!-- Heroicon name: mini/x-mark -->
+              <!--
+              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+-->
+    <script src="js/xjs.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
