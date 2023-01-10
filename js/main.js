@@ -133,7 +133,7 @@ document.getElementById("UpdateNumFields").onclick = function() {
           tempHtml += '<select id="field' + i + '-scene" class="h-10 mt-1 block w-full rounded-none rounded-r-md border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">'+"\n\n";
           tempHtml += '<!-- SceneCount:' + SceneCount + '-->' + "\n";
           for(j = 0; j < SceneCount; j++) {
-            let scene = await xjs.Scene.getById(j+1);
+            let scene = await xjs.Scene.getBySceneIndex(j+1);
             tempHtml += '<!-- SceneNumber:' + j + '-->' + "\n";
        
             tempHtml += '<option value="' + j;
