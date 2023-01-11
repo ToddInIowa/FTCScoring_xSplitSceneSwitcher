@@ -1,6 +1,7 @@
 // to use tailwindcss: https://tailwindcss.com/docs/installation
 // To compile the output.css use the following command in a terminal window
 // npx tailwindcss -i dev/input.css -o css/output.css --watch
+// To debug the XSplit extension, enable developer mode, and then in Chrome type in the address bar: chrome://inspect/#devices  you should find localhost:9222 as an available network debug source
 
 var xjs = require('xjs');
 var ScoringServer = "192.168.0.179";
@@ -133,7 +134,7 @@ document.getElementById("UpdateNumFields").onclick = function() {
           tempHtml += '<select id="field' + i + '-scene" class="h-10 mt-1 block w-full rounded-none rounded-r-md border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">'+"\n\n";
           tempHtml += '<!-- SceneCount:' + SceneCount + '-->' + "\n";
           for(j = 0; j < SceneCount; j++) {
-            let scene = await xjs.Scene.getBySceneIndex(j+1);
+            let scene = await xjs.Scene.getBySceneIndex(j);
             tempHtml += '<!-- SceneNumber:' + j + '-->' + "\n";
        
             tempHtml += '<option value="' + j;
@@ -166,21 +167,7 @@ document.getElementById("UpdateNumFields").onclick = function() {
   
   };
 
-xjs.ready()
-.then(async function() {
-  count = await xjs.Scene.getSceneCount();
-  
-  for(let i = 1; i < count + 1; i++) {
-    scene = await xjs.Scene.getById(i);
-    var newElement = document.createElement('BUTTON');
-    var t = document.createTextNode('Scene:: '+ i);
-    newElement.appendChild(t);
-    document.getElementById('scene-id').appendChild(newElement);
-    newElement.addEventListener('click', function() {
-      xjs.Scene.setActiveScene(scene);
-    });
-  }
-});
+
 
 let SSConnectedStatus = document.getElementById('SSConnectedStatus');
 SSConnectedStatus.className = "h-10 flex rounded-r-md border border-l-0 items-center justify-center px-3 text-sm bg-red-600 shadow-lg";
