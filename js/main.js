@@ -119,11 +119,10 @@ document.getElementById("ConnectSS").onclick = function() {
 
 document.getElementById("UpdateNumFields").onclick = function() {
     NumFields = document.getElementById("NumFields").value;
-    xjs.ready().then(function() {
-  
-      return xjs.Scene.getSceneCount();
-    }).then(function(SceneCount) {
+    xjs.ready().then(async function() {
+      SceneCount = await xjs.Scene.getSceneCount();
       //if (DebugEnabled) { alert('Debug: The number of scenes:' + SceneCount + '\nThe number of fields:' + NumFields); };
+
       if (NumFields > SceneCount) {
         alert('ERROR: The system only has ' + SceneCount + ' scene(s) configured. \nThere must be the same number of scenes or more than the number of fields.');
       } else {
@@ -134,23 +133,20 @@ document.getElementById("UpdateNumFields").onclick = function() {
           tempHtml += '<select id="field' + i + '-scene" class="h-10 mt-1 block w-full rounded-none rounded-r-md border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">'+"\n\n";
           tempHtml += '<!-- SceneCount:' + SceneCount + '-->' + "\n";
           for(j = 0; j < SceneCount; j++) {
+            let scene = await xjs.Scene.getById(j+1);
             tempHtml += '<!-- SceneNumber:' + j + '-->' + "\n";
        
             tempHtml += '<option value="' + j;
             if(i == (j+1) ) {
               tempHtml += '" selected>Scene ' + (j+1) + '-';
             } else {
-              tempHtml += '">Scene ' + (j+1) + '-';
+              tempHtml += '">Scene ' + (j+1) + ' - ';
             }
-            //This section that is supposed to get the scene name isn't working yet.
-            xjs.Scene.getBySceneIndex(0).then(function(focusscene) {
-                focusscene.getName().then(function(name) {
-                  tempHtml += name;
-              });
-            });
+            
+            // Add the scene name
+            tempHtml += await scene.getName();
+
             tempHtml += '</option>\n';
-            
-            
           }
           //  <option value="1" selected>Scene 1</option>
           //  <option value="2">Scene 2</option>
@@ -171,18 +167,17 @@ document.getElementById("UpdateNumFields").onclick = function() {
   };
 
 xjs.ready()
-.then(function() {
-  return xjs.Scene.getSceneCount();
-}).then(function(count) {
+.then(async function() {
+  count = await xjs.Scene.getSceneCount();
+  
   for(let i = 1; i < count + 1; i++) {
-    xjs.Scene.getById(i).then(function(scene) {
-      var newElement = document.createElement('BUTTON');
-      var t = document.createTextNode('Scene:: '+ i);
-      newElement.appendChild(t);
-      document.getElementById('scene-id').appendChild(newElement);
-      newElement.addEventListener('click', function() {
-        xjs.Scene.setActiveScene(scene);
-      });
+    scene = await xjs.Scene.getById(i);
+    var newElement = document.createElement('BUTTON');
+    var t = document.createTextNode('Scene:: '+ i);
+    newElement.appendChild(t);
+    document.getElementById('scene-id').appendChild(newElement);
+    newElement.addEventListener('click', function() {
+      xjs.Scene.setActiveScene(scene);
     });
   }
 });
